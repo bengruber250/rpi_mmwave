@@ -1,7 +1,7 @@
 #include "stdint.h"
 #include "mmw_output.h"
 #include "wiringPi.h"
-#include "wiringSerial.h"
+#include <wiringSerial.h>
 #include <iostream>
 
 constexpr int BAUD = 921600;
