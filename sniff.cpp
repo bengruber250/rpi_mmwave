@@ -33,7 +33,7 @@ int main(int argc, char* argv[])
 
 void setup()
 {
-    fd = serialOpen("/dev/serial1", BAUD);
+    fd = serialOpen("/dev/serial0", BAUD);
 }
 
 void waitForMagicWord()
@@ -61,7 +61,7 @@ void loadHeader()
 
 void printHeader()
 {
-    printf("Version %d, totalPacketLen %d, numDetectedObj %d, numTLVs %d",
+    printf("Version %d, totalPacketLen %d, numDetectedObj %d, numTLVs %d\n",
         header.version,
         header.totalPacketLen,
         header.numDetectedObj,
