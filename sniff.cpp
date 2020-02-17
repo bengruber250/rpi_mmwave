@@ -102,7 +102,9 @@ void processTLVs()
                     *(ptr++) = next_byte;
                 }
                 std::cout << "Object Peak Val: " << detected_obj.peakVal
-                    << ", X Coord Meters (Q Format): " << detected_obj.x << "\n";
+                    << ", X Coord Meters (Q Format): " << detected_obj.x 
+                    <<", Y: " << detected_obj.y
+                    <<", Z: " << detected_obj.z << "\n";
                 //TODO(Ben) Figure out Q format.
             }
 
