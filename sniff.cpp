@@ -20,14 +20,16 @@ static MmwDemo_output_message_header header;
 int main(int argc, char* argv[])
 {
     setup();
-    // Align on magic word.
-    waitForMagicWord();
-    std::cout << "Header Found!\n";
-    // Parse into structs.
-    loadHeader();
-    // Print out info.
-    printHeader();
-    processTLVs();
+    while (1) {
+        // Align on magic word.
+        waitForMagicWord();
+        std::cout << "Header Found!\n";
+        // Parse into structs.
+        loadHeader();
+        // Print out info.
+        printHeader();
+        processTLVs();
+    }
     return 0;
 }
 
@@ -103,7 +105,7 @@ void processTLVs()
             }
 
         } else {
-            std::cout << "Non-object TLV detected. Advancing to next TLV.\n";
+            std::cout << "Non-object TLV detected. Skipping TLV.\n";
             // Advance to the next TLV.
             // TODO(Ben) does the length include the tlv header or not?
             for (int i = 0; i < tag_length.length; i++) {
