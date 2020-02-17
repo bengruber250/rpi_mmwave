@@ -79,7 +79,7 @@ void processTLVs()
         }
         printf("Tag %d, Length %d\n", tag_length.type, tag_length.length);
         if (tag_length.type == MMWDEMO_OUTPUT_MSG_DETECTED_POINTS) { // Obj detected.
-            std::cout << "Object detected!\n!";
+            std::cout << "Object TLV detected!\n";
             /* Get Metadata */
             MmwDemo_output_message_dataObjDescr obj_metadata;
             auto ptr = (uint8_t*)&obj_metadata;
@@ -88,7 +88,7 @@ void processTLVs()
                 *(ptr++) = next_byte;
             }
             std::cout << "Num detected objects: " << obj_metadata.numDetetedObj
-                << ", xyzqformat: " << obj_metadata.xyzQFormat;
+                << ", xyzqformat: " << obj_metadata.xyzQFormat << "\n";
             /* Process all of the associated objects. */
             for (int obj_num = 0; obj_num < obj_metadata.numDetetedObj; obj_num++) {
                 MmwDemo_detectedObj detected_obj;
@@ -98,11 +98,12 @@ void processTLVs()
                     *(ptr++) = next_byte;
                 }
                 std::cout << "Object Peak Val: " << detected_obj.peakVal
-                    << ", X Coord Meters (Q Format): " << detected_obj.x;
+                    << ", X Coord Meters (Q Format): " << detected_obj.x << "\n";
                 //TODO(Ben) Figure out Q format.
             }
 
         } else {
+            std::cout << "Non-object TLV detected. Advancing to next TLV."
             // Advance to the next TLV.
             // TODO(Ben) does the length include the tlv header or not?
             for (int i = 0; i < tag_length.length; i++) {
