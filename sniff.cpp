@@ -106,6 +106,8 @@ void processTLVs()
                     <<", Y: " << detected_obj.y
                     <<", Z: " << detected_obj.z << "\n";
                 //TODO(Ben) Figure out Q format.
+                int attempt = detected_obj.rangeIdx + detected_obj.x * 256;
+                std::cout << "Secret Range: " << attempt << "\n";
             }
 
         } else {
