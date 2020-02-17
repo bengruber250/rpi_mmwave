@@ -1,8 +1,9 @@
 #include "stdint.h"
 #include "mmw_output.h"
 #include "wiringPi.h"
-#include <cstdio>
 #include "wiringSerial.h"
+#include "detected_obj.h"
+#include <cstdio>
 #include <iostream>
 
 constexpr int BAUD = 921600;
@@ -51,27 +52,62 @@ void waitForMagicWord()
 void loadHeader()
 {
     uint8_t* start = (uint8_t*)&header.version;
-    while (start < (((uint8_t *)&header.numTLVs) + sizeof(header.numTLVs))) {
+    while (start < (((uint8_t*)&header.numTLVs) + sizeof(header.numTLVs))) {
         int next_byte = serialGetchar(fd);
         *(start++) = next_byte;
     }
     //Endianness ??
 }
 
-void printHeader() {
+void printHeader()
+{
     printf("Version %d, totalPacketLen %d, numDetectedObj %d, numTLVs %d",
-            header.version,
-            header.totalPacketLen,
-            header.numDetectedObj,
-            header.numTLVs);
+        header.version,
+        header.totalPacketLen,
+        header.numDetectedObj,
+        header.numTLVs);
 }
 
-void processTLVs() {
-    MmwDemo_output_message_tl tag_length;
-    auto ptr = (uint8_t *) &tag_length;
-    for (int i = 0; i < sizeof(tag_length); ++i) {
-        int next_byte = serialGetchar(fd);
-        *(ptr++) = next_byte;
+void processTLVs()
+{
+    for (int tlv_num = 0; tlv_num < header.numTLVs; tlv_num++) {
+        MmwDemo_output_message_tl tag_length;
+        auto ptr = (uint8_t*)&tag_length;
+        for (int i = 0; i < sizeof(tag_length); ++i) {
+            int next_byte = serialGetchar(fd);
+            *(ptr++) = next_byte;
+        }
+        printf("Tag %d, Length %d\n", tag_length.type, tag_length.length);
+        if (tag_length.type == MMWDEMO_OUTPUT_MSG_DETECTED_POINTS) { // Obj detected.
+            std::cout << "Object detected!\n!";
+            /* Get Metadata */
+            MmwDemo_output_message_dataObjDescr obj_metadata;
+            auto ptr = (uint8_t*)&obj_metadata;
+            for (int i = 0; i < sizeof(obj_metadata); ++i) {
+                int next_byte = serialGetchar(fd);
+                *(ptr++) = next_byte;
+            }
+            std::cout << "Num detected objects: " << obj_metadata.numDetetedObj
+                << ", xyzqformat: " << obj_metadata.xyzQFormat;
+            /* Process all of the associated objects. */
+            for (int obj_num = 0; obj_num < obj_metadata.numDetetedObj; obj_num++) {
+                MmwDemo_detectedObj detected_obj;
+                auto ptr = (uint8_t*)&detected_obj;
+                for (int i = 0; i < sizeof(detected_obj); ++i) {
+                    int next_byte = serialGetchar(fd);
+                    *(ptr++) = next_byte;
+                }
+                std::cout << "Object Peak Val: " << detected_obj.peakVal
+                    << ", X Coord Meters (Q Format): " << detected_obj.x;
+                //TODO(Ben) Figure out Q format.
+            }
+
+        } else {
+            // Advance to the next TLV.
+            // TODO(Ben) does the length include the tlv header or not?
+            for (int i = 0; i < tag_length.length; i++) {
+                serialGetchar(fd);
+            }
+        }
     }
-    printf("Tag %d, Length %d", tag_length.type, tag_length.length);
 }
