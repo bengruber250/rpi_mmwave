@@ -29,6 +29,7 @@ int main(int argc, char* argv[])
         // Print out info.
         printHeader();
         processTLVs();
+        std::cout <<"\n-------------------\n"; // Break between outputs.
     }
     return 0;
 }
@@ -63,7 +64,8 @@ void loadHeader()
 
 void printHeader()
 {
-    printf("Version %d, totalPacketLen %d, numDetectedObj %d, numTLVs %d\n",
+    printf("Seq Num: %d,Version %d, totalPacketLen %d, numDetectedObj %d, numTLVs %d\n",
+        header.frameNumber,
         header.version,
         header.totalPacketLen,
         header.numDetectedObj,
