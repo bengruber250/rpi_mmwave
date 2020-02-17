@@ -110,7 +110,7 @@ void processTLVs()
                 std::cout << "Secret Range: " << attempt << "\n";
                 double real_range_meters = attempt / 1048576.0;
                 std::cout << "Floating-pt Range: " << real_range_meters << "\n";
-                double adjusted_range = (real_range_meters - .0696) * 1000;
+                double adjusted_range = (real_range_meters - 0.00696) * 1000;
                 std::cout << "Adjusted: " << adjusted_range << "\n";
             }
 
