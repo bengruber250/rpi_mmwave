@@ -108,6 +108,8 @@ void processTLVs()
                 //TODO(Ben) Figure out Q format.
                 int attempt = detected_obj.rangeIdx + detected_obj.x * 256;
                 std::cout << "Secret Range: " << attempt << "\n";
+                double real_range_meters = attempt / 1048576.0;
+                std::cout << "Floating-pt Range: " << real_range_meters << "\n";
             }
 
         } else {
