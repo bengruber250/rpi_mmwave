@@ -141,7 +141,6 @@ void startSensor()
     while (std::getline(file, line)) {
         serialPuts(fd, line.c_str());
         for (auto &c: line) {
-            sleep(1);
             serialPutchar(fd, c);
             putchar(c);
         }
