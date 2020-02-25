@@ -7,6 +7,7 @@
 #include <fstream>
 #include <iostream>
 #include <string>
+#include <unistd.h>
 
 constexpr int BAUD_RX = 921600;
 constexpr int BAUD_TX = 115200;
@@ -134,11 +135,14 @@ void startSensor()
 {
     fd = serialOpen("/dev/serial0", BAUD_TX);
     serialPutchar(fd, '\n');
+    serialFlush(fd);
     std::ifstream file("config");
     std::string line;
     while (std::getline(file, line)) {
         serialPuts(fd, line.c_str());
         serialPutchar(fd, '\n');
+        serialFlush(fd);
+        sleep(1);
     }
     serialClose(fd);
 }
