@@ -122,11 +122,12 @@ void processTLVs()
 
         } else {
             std::cout << "Non-object TLV detected. Skipping TLV.\n";
+            return;
             // Advance to the next TLV.
             // TODO(Ben) does the length include the tlv header or not?
-            for (int i = 0; i < tag_length.length; i++) {
-                serialGetchar(fd);
-            }
+            //for (int i = 0; i < tag_length.length; i++) {
+            //    serialGetchar(fd);
+            //}
         }
     }
 }
