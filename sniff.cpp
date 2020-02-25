@@ -142,11 +142,11 @@ void startSensor()
     std::string line;
     while (std::getline(file, line)) {
         for (auto &c: line) {
-            delay(50);
+            delay(5);
             serialPutchar(fd, c);
             putchar(c);
         }
-        delay(50);
+        delay(5);
         serialPutchar(fd, '\n');
         putchar('\n');
         serialFlush(fd);
