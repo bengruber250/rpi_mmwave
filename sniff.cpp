@@ -134,6 +134,7 @@ void processTLVs()
 void startSensor()
 {
     fd = serialOpen("/dev/serial0", BAUD_TX);
+    sleep(1);
     serialPutchar(fd, '\n');
     serialFlush(fd);
     std::ifstream file("config");
@@ -143,11 +144,9 @@ void startSensor()
             serialPutchar(fd, c);
             putchar(c);
         }
-        sleep(1);
         serialPutchar(fd, '\n');
         putchar('\n');
         serialFlush(fd);
-        sleep(1);
     }
     serialClose(fd);
 }
