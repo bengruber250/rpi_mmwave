@@ -4,10 +4,14 @@
 #include "wiringSerial.h"
 #include "detected_obj.h"
 #include <cstdio>
+#include <fstream>
 #include <iostream>
+#include <string>
 
-constexpr int BAUD = 921600;
+constexpr int BAUD_RX = 921600;
+constexpr int BAUD_TX = 115200;
 
+void startSensor();
 void setup();
 void waitForMagicWord();
 void loadHeader();
@@ -19,6 +23,7 @@ static const char magicWord[8] = { 0x02, 0x01, 0x04, 0x03, 0x06, 0x05, 0x08, 0x0
 static MmwDemo_output_message_header header;
 int main(int argc, char* argv[])
 {
+    startSensor();
     setup();
     while (1) {
         // Align on magic word.
@@ -36,7 +41,7 @@ int main(int argc, char* argv[])
 
 void setup()
 {
-    fd = serialOpen("/dev/serial0", BAUD);
+    fd = serialOpen("/dev/serial0", BAUD_RX);
 }
 
 void waitForMagicWord()
@@ -123,4 +128,15 @@ void processTLVs()
             }
         }
     }
+}
+
+void startSensor()
+{
+    fd = serialOpen("/dev/serial0", BAUD_TX);
+    std::ifstream file("config");
+    std::string line;
+    while (std::getline(file, line)) {
+        serialPuts(fd, line.c_str());
+    }
+    serialClose(fd);
 }
