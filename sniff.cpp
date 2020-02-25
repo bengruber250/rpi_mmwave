@@ -137,6 +137,7 @@ void startSensor()
     std::string line;
     while (std::getline(file, line)) {
         serialPuts(fd, line.c_str());
+        for(int i = 0; i < 100000;i++);
     }
     serialClose(fd);
 }
